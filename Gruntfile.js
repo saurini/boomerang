@@ -64,6 +64,15 @@ var SAUCELABS_CONFIG = {
 	tunneled: false
 };
 
+var replaceBeaconType = {
+	pattern: /beacon_type: \"AUTO\"/,
+	replacement: 'beacon_type: "POST"'
+};
+var replaceBoomrEnd = {
+        pattern: /\/\/ This code.*\nBOOMR.t_end.*;/,
+	replacement: "\nBOOMR.init({\n  beacon_url:'\/\/qls.qsstats.com\/v1\/log/boomerang'\,\n  site_domain: false});\n\n\/\/ This code is run after all plugins have initialized\nBOOMR.t_end = new Date().getTime();"
+};
+
 //
 // Grunt config
 //
@@ -260,7 +269,14 @@ module.exports = function() {
 						{
 							pattern: /beacon_urls_allowed: \[\]/,
 							replacement: "beacon_urls_allowed: [" + buildConfig.beaconUrlsAllowed + "]"
-						}
+						},
+						{
+                            				pattern: /BOOMR.debug.*;/g,
+                            				replacement: ''
+                        			},
+						replaceBeaconType,
+						replaceBoomrEnd
+						
 					]
 				}
 			},
